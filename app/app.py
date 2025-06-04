@@ -1,16 +1,15 @@
 import streamlit as st
-import datetime
+from st_audiorec import st_audiorec
+from pathlib import Path
 
 # Titre onglet
 st.set_page_config(
-    page_title="Collecte Audio Anonyme",  
-    page_icon="🎙️",                      
+    page_title="Collecte Audio Anonyme",
+    page_icon="🎙️",
     layout="centered",
 )
 
-
 st.title("Enregistrement de phrases")
-
 
 # Accueil
 if "step" not in st.session_state:
@@ -34,18 +33,28 @@ if st.session_state["step"] == 2:
 
 # Affichage phrases + enregistrement
 if st.session_state["step"] == 3:
-    # Liste de phrases
     sentences = ["Bonjour", "Comment ça va ?", "Il fait beau aujourd'hui."]
     idx = st.session_state["sentence_idx"]
     st.write(f"Phrase {idx+1}/{len(sentences)} : {sentences[idx]}")
-    audio_data = st.audio_recorder("Enregistrez votre phrase")
-    if st.button("Valider"):
-        # Sauvegarder audio + infos dans le dossier recordings/
-        # ... (code à compléter)
-        if idx+1 < len(sentences):
+
+    audio_data = st_audiorec()
+
+    if st.button("Valider") and audio_data is not None:
+        age = st.session_state["age"]
+        gender = st.session_state["gender"]
+        idx = st.session_state["sentence_idx"]
+        Path("recordings").mkdir(exist_ok=True)
+        out_path = Path("recordings") / f"{age}_{gender}_phrase{idx+1}.wav"
+        with open(out_path, "wb") as f:
+            f.write(audio_data)
+        # Passage à la phrase suivante ou fin
+        if idx + 1 < len(sentences):
             st.session_state["sentence_idx"] += 1
         else:
             st.session_state["step"] = 4
+
+    if audio_data is not None:
+        st.audio(audio_data, format="audio/wav")
 
 # Fin
 if st.session_state["step"] == 4:
