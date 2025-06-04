@@ -1,15 +1,16 @@
 import streamlit as st
 import datetime
 
-st.title("Enregistrement de phrases")
-
-
 # Titre onglet
 st.set_page_config(
     page_title="Collecte Audio Anonyme",  
     page_icon="🎙️",                      
     layout="centered",
 )
+
+
+st.title("Enregistrement de phrases")
+
 
 # Accueil
 if "step" not in st.session_state:
