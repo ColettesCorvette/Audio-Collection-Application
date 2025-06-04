@@ -43,32 +43,8 @@ Modifiez ou remplacez le fichier sentences.txt pour ajouter vos phrases, une phr
 docker compose up --build
 ```
 
-L’application sera accessible sur http://localhost:8501.
+L’application sera accessible sur https://localhost
 Les enregistrements seront sauvegardés dans le dossier recordings/.
-
-⚡ Pour développement local (hors docker)
-
-
-```bash
-pip install -r requirements.txt
-streamlit run app/app.py
-```
-
-
-📝 Structure du dépôt
-
-.
-├── app/
-│   └── app.py
-├── sentences.txt
-├── recordings/
-├── requirements.txt
-├── Dockerfile
-├── docker-compose.yml
-├── .dockerignore
-└── README.md
-
-
 
 🛡️ Sécurité & Anonymat
 Respect de la vie privée
@@ -91,7 +67,7 @@ Sécurité technique
 
     Aucun service inutile n’est exposé ; seul le port 8501 (http) est ouvert par défaut.
 
-    Pour un usage en production, il est recommandé de placer l’application derrière un reverse proxy (NGINX, Caddy) et d’utiliser HTTPS.
+    Pour un usage en production, il est recommandé de placer l’application derrière un reverse proxy (Caddy) et d’utiliser HTTPS.
 
     Un .dockerignore est présent pour ne pas embarquer de fichiers sensibles dans l’image Docker.
 
