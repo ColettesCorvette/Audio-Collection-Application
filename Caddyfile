@@ -1,0 +1,10 @@
+
+localhost {
+    reverse_proxy streamlit:8501
+    tls internal
+    @http {
+    	protocol http
+    }
+    redir @http https://localhost{uri} 308
+}
+
