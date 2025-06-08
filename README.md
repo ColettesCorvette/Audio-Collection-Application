@@ -1,84 +1,77 @@
-# Audio Collection Application
+Audio Collection Application
+===========================
 
-Ce projet est une application web permettant de collecter anonymement des enregistrements audio de participants qui lisent des phrases à l'écran.
-Elle est conçue pour faciliter la recherche et la collecte de données vocales tout en respectant la vie privée.
+Cette application web permet de collecter anonymement des enregistrements audio de participants lisant des phrases affichées à l'écran.
+Elle facilite la recherche et la collecte de données vocales dans le respect de la vie privée, sans jamais demander de donnée personnelle.
 
----
-
-## 🛠️ Fonctionnalités
-
-- Interface web simple (Streamlit)
-- Collecte des infos démographiques **anonymes** (âge, genre, consentement)
-- Sélection du nombre de phrases à lire (optionnel)
+---------------------------
+Fonctionnalités principales
+---------------------------
+- Interface web simple et efficace (Streamlit)
+- Saisie anonyme d’informations démographiques (âge, genre, consentement)
+- Choix du nombre de phrases à lire pour chaque session
+- Affichage de phrases choisies aléatoirement et sans doublons parmi celles présentes dans `sentences.txt`
 - Enregistrement audio phrase par phrase
-- Réécoute immédiate possible
-- Arrêt anticipé de la session possible
-- **Aucune information personnelle collectée**
-- Déploiement facile via Docker (et Docker Compose, possibilité de reverse proxy)
+- Réécoute immédiate après chaque enregistrement
+- Arrêt anticipé de la session possible (les fichiers déjà enregistrés sont conservés)
+- Aucune information personnelle collectée
+- Déploiement rapide avec Docker (et Docker Compose, compatible reverse proxy)
 
----
+------------------------
+Installation & Lancement
+------------------------
+1. Prérequis
+   - Docker installé sur votre machine
+   - (Facultatif pour dev local) Python 3.8+ et pip
 
-## 🚀 Installation & Lancement
+2. Cloner le dépôt
+   git clone https://github.com/ColettesCorvette/Audio-Collection-Application.git
+   cd Audio-Collection-Application
 
-### 1. **Prérequis**
+3. Préparer les phrases à lire
+   Modifiez le fichier sentences.txt pour ajouter ou remplacer les phrases à lire, une phrase par ligne (sans numérotation, ni guillemets).
+   Exemple de contenu pour sentences.txt :
+   Bonjour, comment allez-vous ?
+   Le chat dort sur le canapé.
+   Il fait beau aujourd'hui.
+   ...
+   (Jusqu'à 100 phrases ou plus)
 
-- [Docker](https://www.docker.com/products/docker-desktop/) installé sur votre machine
-- (Facultatif pour dev local) Python 3.8+
+4. Démarrer l’application avec Docker Compose
+   docker compose up --build
+   L’application sera accessible sur http://localhost:8501
+   Les enregistrements audio sont sauvegardés automatiquement dans le dossier recordings/ de votre projet.
 
-### 2. **Cloner le dépôt**
+5. Récupérer les fichiers audio
+   Tous les fichiers générés sont dans le dossier recordings/ du dépôt, visible sur votre machine (grâce au volume Docker).
 
-```bash
-git clone git@github.com:ColettesCorvette/Audio-Collection-Application.git
-cd Audio-Collection-Application
-```
+---------------------------
+Architecture & Workflow
+---------------------------
+- Accueil : L’utilisateur commence une session
+- Formulaire : Renseigne âge, genre, consentement, nombre de phrases à enregistrer
+- Sélection aléatoire : L’application pioche N phrases différentes dans sentences.txt (ordre aléatoire)
+- Session d’enregistrement : L’utilisateur lit chaque phrase, enregistre et valide son audio, puis passe à la suivante
+- Fin ou arrêt anticipé : Retour à l’accueil, tous les fichiers déjà enregistrés sont sauvegardés
 
-### 3. **Préparer les phrases à lire**
-
-Modifiez ou remplacez le fichier sentences.txt pour ajouter vos phrases, une phrase par ligne.
-
-
-### 4. Démarrer l’application avec Docker Compose
-
-```bash
-docker compose up --build
-```
-
-L’application sera accessible sur https://localhost
-Les enregistrements seront sauvegardés dans le dossier recordings/.
-
-🛡️ Sécurité & Anonymat
+-------------------------
+Sécurité & Anonymat
+-------------------------
 Respect de la vie privée
-
-    L’application ne collecte aucune donnée personnelle (pas de nom, email, IP, etc.).
-
-    Seules les informations minimales (âge, genre, consentement explicite) sont demandées.
-
-    Chaque fichier audio est stocké anonymement avec un nom du type age_genre_phraseX.wav.
-
-    Les réponses sont stockées localement, sans transmission vers un serveur tiers.
+- L’application ne collecte aucune donnée personnelle (pas de nom, pas d’email, pas d’IP, etc.)
+- Seules les informations minimales (âge, genre, consentement explicite) sont demandées au début de chaque session
+- Les fichiers sont nommés de manière anonyme : age_genre_phraseX.wav
 
 Consentement
-
-    L’utilisateur doit obligatoirement donner son consentement explicite avant de participer.
+- L’utilisateur doit obligatoirement donner son consentement explicite avant de commencer
 
 Sécurité technique
-
-    L’application tourne dans un conteneur Docker, ce qui limite les risques d’accès non autorisé au système hôte.
-
-    Aucun service inutile n’est exposé ; seul le port 8501 (http) est ouvert par défaut.
-
-    Pour un usage en production, il est recommandé de placer l’application derrière un reverse proxy (Caddy) et d’utiliser HTTPS.
-
-    Un .dockerignore est présent pour ne pas embarquer de fichiers sensibles dans l’image Docker.
+- L’application tourne entièrement dans un conteneur Docker, ce qui limite les risques d’accès non autorisé au système hôte
+- Seul le port 8501 (HTTP) est exposé par défaut
+- Il est recommandé, en production, de placer l’application derrière un reverse proxy HTTPS (Caddy, NGINX)
+- Le fichier .dockerignore protège l’image Docker en excluant les fichiers inutiles ou sensibles
 
 Bonnes pratiques
-
-    Aucun mot de passe ou clé API n’est utilisé ou stocké.
-
-    Les enregistrements sont accessibles uniquement par les administrateurs du serveur local.
-
-    Il est recommandé de nettoyer le dossier recordings/ régulièrement selon les besoins du projet.
-
-
-
-
+- Aucun mot de passe ou clé API n’est utilisé ni stocké
+- Les enregistrements sont accessibles uniquement aux administrateurs du serveur local
+- Pensez à nettoyer le dossier recordings/ régulièrement selon la politique de conservation des données
